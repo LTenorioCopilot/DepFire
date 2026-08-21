@@ -1,0 +1,10 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Depfire.git.slnx/config/applicationhost.config
+/.vs/Depfire.git.slnx/FileContentIndex/5a0fd03e-3e40-4387-a35e-93ed497ef98d.vsidx
+/.vs/Depfire.git.slnx/FileContentIndex/e5b92ed9-e63c-446c-a0ee-f1c787fdef00.vsidx
+/.vs/Depfire.git.slnx/v18/.wsuo
+/.vs/slnx.sqlite
+*.vsidx
