@@ -41,34 +41,26 @@
   <p style="color:var(--steel); font-size:14px;">Este es un archivo aislado, separado del sitio principal, solo para validar que el widget carga bien antes de integrarlo a la landing.</p>
 
   <div class="note">
-    <strong>Nota:</strong> este widget solo se renderiza correctamente si abres este archivo desde un servidor real (http/https) — abrirlo directo desde tu computadora (file://) puede que Facebook no lo cargue por restricciones de seguridad del navegador. Si no carga, prueba subiéndolo a un hosting de prueba o usa una extensión de "live server" local.
+    <strong>Nota:</strong> este método usa un iframe directo de Facebook (más simple y estable que el SDK de JavaScript). Aun así, pruébalo siempre en un servidor real (http/https), sin bloqueador de anuncios activo — <code>facebook.com</code> es de los dominios más bloqueados por defecto en varios navegadores/extensiones.
   </div>
 
   <div class="card">
-    <div id="fb-root"></div>
-    <div class="fb-page"
-      data-href="https://www.facebook.com/share/17w6WgYbcd/"
-      data-tabs="timeline"
-      data-width="500"
-      data-height="600"
-      data-small-header="false"
-      data-adapt-container-width="true"
-      data-hide-cover="false"
-      data-show-facepile="false">
-      <blockquote cite="https://www.facebook.com/share/17w6WgYbcd/" class="fb-xfbml-parse-ignore">
-        <a href="https://www.facebook.com/share/17w6WgYbcd/">DEP FIRE SA DE CV</a>
-      </blockquote>
-    </div>
+    <iframe
+      src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2F17w6WgYbcd%2F&tabs=timeline&width=500&height=600&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false"
+      width="500" height="600"
+      style="border:none; overflow:hidden; max-width:100%;"
+      scrolling="no"
+      frameborder="0"
+      allowfullscreen="true"
+      allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+    </iframe>
   </div>
 
   <div class="meta">
-    <p><strong>Cómo funciona:</strong> Facebook carga este contenido directamente desde sus servidores mediante su SDK de JavaScript (<code>connect.facebook.net</code>). No pasa por tu hosting de Azure.</p>
-    <p><strong>Parámetros que puedes ajustar:</strong> <code>data-width</code> / <code>data-height</code> (tamaño), <code>data-tabs="timeline"</code> (qué muestra), <code>data-small-header</code> (versión compacta del encabezado).</p>
+    <p><strong>Cómo funciona:</strong> Facebook carga este contenido directamente desde sus servidores mediante un iframe. No pasa por tu hosting de Azure.</p>
+    <p><strong>Parámetros que puedes ajustar</strong> (editando la URL del <code>src</code>): <code>width</code> / <code>height</code> (tamaño), <code>tabs=timeline</code> (qué muestra), <code>small_header</code> (versión compacta del encabezado).</p>
   </div>
 </div>
 
-<script async defer crossorigin="anonymous"
-  src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v23.0">
-</script>
 </body>
 </html>
