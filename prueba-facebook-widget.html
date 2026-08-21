@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba de concepto — Widget de Facebook</title>
+<style>
+  :root{
+    --ink:#2b2b2a;
+    --ember:#cd361a;
+    --paper:#f6f4ef;
+    --steel:#6c7178;
+    --line:rgba(21,23,26,0.1);
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    margin:0;
+    padding:40px 20px;
+  }
+  .wrap{max-width:640px; margin:0 auto;}
+  h1{font-size:22px; margin-bottom:6px;}
+  .note{
+    background:#fff8ea; border:1px solid #f0dca0; color:#7a5c00;
+    padding:14px 16px; border-radius:4px; font-size:14px; margin:20px 0 32px; line-height:1.5;
+  }
+  .card{
+    background:#fff; border:1px solid var(--line); border-radius:6px;
+    padding:24px; display:flex; justify-content:center;
+  }
+  .meta{margin-top:24px; font-size:13px; color:var(--steel); line-height:1.6;}
+  .meta code{background:#eee; padding:2px 6px; border-radius:3px; font-size:12px;}
+  a{color:var(--ember);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Prueba de concepto: Widget de Facebook (Page Plugin)</h1>
+  <p style="color:var(--steel); font-size:14px;">Este es un archivo aislado, separado del sitio principal, solo para validar que el widget carga bien antes de integrarlo a la landing.</p>
+
+  <div class="note">
+    <strong>Nota:</strong> este widget solo se renderiza correctamente si abres este archivo desde un servidor real (http/https) — abrirlo directo desde tu computadora (file://) puede que Facebook no lo cargue por restricciones de seguridad del navegador. Si no carga, prueba subiéndolo a un hosting de prueba o usa una extensión de "live server" local.
+  </div>
+
+  <div class="card">
+    <div id="fb-root"></div>
+    <div class="fb-page"
+      data-href="https://www.facebook.com/share/17w6WgYbcd/"
+      data-tabs="timeline"
+      data-width="500"
+      data-height="600"
+      data-small-header="false"
+      data-adapt-container-width="true"
+      data-hide-cover="false"
+      data-show-facepile="false">
+      <blockquote cite="https://www.facebook.com/share/17w6WgYbcd/" class="fb-xfbml-parse-ignore">
+        <a href="https://www.facebook.com/share/17w6WgYbcd/">DEP FIRE SA DE CV</a>
+      </blockquote>
+    </div>
+  </div>
+
+  <div class="meta">
+    <p><strong>Cómo funciona:</strong> Facebook carga este contenido directamente desde sus servidores mediante su SDK de JavaScript (<code>connect.facebook.net</code>). No pasa por tu hosting de Azure.</p>
+    <p><strong>Parámetros que puedes ajustar:</strong> <code>data-width</code> / <code>data-height</code> (tamaño), <code>data-tabs="timeline"</code> (qué muestra), <code>data-small-header</code> (versión compacta del encabezado).</p>
+  </div>
+</div>
+
+<script async defer crossorigin="anonymous"
+  src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v19.0">
+</script>
+</body>
+</html>
