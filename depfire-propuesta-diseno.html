@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEP FIRE — Propuesta de rediseño</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2b2b2a;
+    --ash:#363634;
+    --ash-2:#414140;
+    --ember:#cd361a;
+    --ember-dark:#a12a13;
+    --flame-1:#ffd716;
+    --flame-2:#f09316;
+    --paper:#f6f4ef;
+    --paper-2:#eeece4;
+    --steel:#6c7178;
+    --steel-light:#a7a29c;
+    --white:#ffffff;
+    --line:rgba(255,255,255,0.12);
+    --line-dark:rgba(21,23,26,0.1);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.02em; line-height:1.1;}
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
+  .eyebrow{
+    font-family:'Inter',sans-serif; font-weight:600; font-size:12px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--ember); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:''; width:22px; height:2px; background:var(--ember); display:inline-block;}
+  .btn{
+    display:inline-flex; align-items:center; gap:10px; padding:15px 30px;
+    font-family:'Inter',sans-serif; font-weight:600; font-size:14px; letter-spacing:0.03em;
+    text-transform:uppercase; border-radius:2px; cursor:pointer; border:1.5px solid transparent;
+    transition:all .35s var(--ease);
+  }
+  .btn-primary{background:var(--ember); color:var(--white);}
+  .btn-primary:hover{background:var(--ember-dark); transform:translateY(-2px);}
+  .btn-ghost{border-color:rgba(255,255,255,0.35); color:var(--white);}
+  .btn-ghost:hover{border-color:var(--white); background:rgba(255,255,255,0.08);}
+  .btn-dark{border-color:var(--ink); color:var(--ink);}
+  .btn-dark:hover{background:var(--ink); color:var(--white);}
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
+  .reveal.is-visible{opacity:1; transform:translateY(0);}
+  .stagger > *{opacity:0; transform:translateY(28px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+  .stagger.is-visible > *{opacity:1; transform:translateY(0);}
+  .stagger.is-visible > *:nth-child(1){transition-delay:.05s;}
+  .stagger.is-visible > *:nth-child(2){transition-delay:.15s;}
+  .stagger.is-visible > *:nth-child(3){transition-delay:.25s;}
+  .stagger.is-visible > *:nth-child(4){transition-delay:.35s;}
+  .stagger.is-visible > *:nth-child(5){transition-delay:.45s;}
+  .stagger.is-visible > *:nth-child(6){transition-delay:.55s;}
+
+  /* ---------- utility bar ---------- */
+  .util-bar{background:var(--ink); color:var(--steel-light); font-size:12.5px;}
+  .util-bar .wrap{display:flex; justify-content:space-between; align-items:center; height:38px;}
+  .util-bar .util-links{display:flex; gap:26px;}
+  .util-bar a:hover{color:var(--white);}
+  .util-bar i{opacity:.7; margin-right:6px;}
+
+  /* ---------- header / nav ---------- */
+  header{position:sticky; top:0; z-index:100; background:var(--white); border-bottom:1px solid var(--line-dark); transition:padding .35s var(--ease), box-shadow .35s var(--ease);}
+  header.scrolled{box-shadow:0 8px 24px rgba(21,23,26,0.1);}
+  .nav-main{display:flex; align-items:center; justify-content:space-between; padding:22px 0; transition:padding .35s var(--ease);}
+  header.scrolled .nav-main{padding:13px 0;}
+  .logo{display:flex; align-items:center; gap:10px;}
+  .logo .mark{
+    height:42px; display:flex; align-items:center; flex-shrink:0; transition:transform .3s var(--ease);
+  }
+  .logo .mark img{height:100%; width:auto; display:block;}
+  .logo:hover .mark{transform:translateY(-1px);}
+  .logo small{display:block; font-family:'Inter',sans-serif; font-weight:400; font-size:9.5px; letter-spacing:0.14em; color:var(--steel); text-transform:uppercase; margin-top:2px;}
+  .nav-links{display:flex; gap:34px; list-style:none;}
+  .nav-links a{font-size:13px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--steel); position:relative; padding-bottom:4px;}
+  .nav-links a::after{content:''; position:absolute; left:0; bottom:0; width:0; height:1.5px; background:var(--ember); transition:width .35s var(--ease);}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-sub{background:var(--paper-2); border-top:1px solid var(--line-dark);}
+  .nav-sub ul{display:flex; gap:30px; list-style:none; height:44px; align-items:center;}
+  .nav-sub a{font-size:11.5px; font-weight:500; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel);}
+  .nav-sub a:hover{color:var(--ember);}
+  .burger{display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer;}
+  .burger span{width:24px; height:2px; background:var(--ink);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; min-height:640px; display:flex; align-items:flex-end;
+    background:var(--ink); color:var(--white); overflow:hidden;
+  }
+  .hero-video{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;}
+  .hero::before{
+    content:''; position:absolute; inset:0; z-index:1;
+    background:linear-gradient(180deg, rgba(43,43,42,0.30) 0%, rgba(43,43,42,0.62) 55%, rgba(43,43,42,0.94) 100%);
+  }
+  .hero-inner{padding:110px 0 70px; position:relative; z-index:2;}
+  .hero h1{font-size:clamp(34px,5.4vw,64px); max-width:15ch; margin:18px 0 22px; opacity:0; transform:translateY(30px); animation:heroUp .9s var(--ease) .25s forwards;}
+  .hero p{font-size:17px; max-width:52ch; color:rgba(255,255,255,0.82); margin-bottom:34px; opacity:0; transform:translateY(30px); animation:heroUp .9s var(--ease) .45s forwards;}
+  .hero .eyebrow{color:var(--flame-1); opacity:0; transform:translateY(30px); animation:heroUp .9s var(--ease) .1s forwards;}
+  .hero .hero-cta{display:flex; gap:16px; flex-wrap:wrap; opacity:0; transform:translateY(30px); animation:heroUp .9s var(--ease) .65s forwards;}
+  @keyframes heroUp{to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- sections generic ---------- */
+  section{padding:96px 0;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:52px; gap:24px; flex-wrap:wrap;}
+  .section-head h2{font-size:clamp(26px,3.4vw,40px); margin-top:14px; max-width:20ch;}
+  .section-head p{color:var(--steel); max-width:38ch; font-size:15px;}
+
+  /* ---------- partners / certifications ---------- */
+  .partners{background:var(--paper-2); padding:44px 0;}
+  .partners-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:28px;}
+  .partner-badge{display:flex; flex-direction:column; align-items:center; gap:6px; opacity:.75; transition:opacity .3s;}
+  .partner-badge:hover{opacity:1;}
+  .partner-badge .code{font-family:'Oswald',sans-serif; font-weight:600; font-size:20px; color:var(--ink);}
+  .partner-badge .label{font-size:10.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--steel);}
+
+  /* ---------- projects ---------- */
+  .proj-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:26px;}
+  .proj-card{background:var(--ink); border-radius:3px; overflow:hidden; cursor:pointer; transition:transform .45s var(--ease), box-shadow .45s var(--ease);}
+  .proj-card:hover{transform:translateY(-6px); box-shadow:0 20px 40px rgba(21,23,26,0.18);}
+  .proj-thumb{
+    height:190px; position:relative;
+    background:repeating-linear-gradient(45deg, #2a2d32 0px, #2a2d32 10px, #22252a 10px, #22252a 20px);
+    display:flex; align-items:center; justify-content:center; color:var(--steel-light); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    overflow:hidden;
+  }
+  .proj-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+  .proj-thumb::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, transparent 40%, rgba(21,23,26,0.85) 100%); opacity:0; transition:opacity .4s var(--ease);}
+  .proj-card:hover .proj-thumb::after{opacity:1;}
+  .proj-tag{position:absolute; top:14px; left:14px; background:var(--ember); color:var(--white); font-size:10px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; padding:5px 10px; z-index:2;}
+  .proj-body{padding:20px 22px 24px;}
+  .proj-body h4{color:var(--white); font-size:16px; margin-bottom:8px; letter-spacing:0;}
+  .proj-body p{color:var(--steel-light); font-size:13.5px;}
+  .view-all{display:flex; justify-content:center; margin-top:44px;}
+
+  /* ---------- services (numbered) ---------- */
+  .services{background:var(--ink); color:var(--white);}
+  .services .section-head p{color:var(--steel-light);}
+  .services .eyebrow{color:var(--flame-1);}
+  .svc-list{border-top:1px solid var(--line);}
+  .svc-row{
+    display:grid; grid-template-columns:70px 1fr 1.4fr; gap:36px; align-items:start;
+    padding:34px 0; border-bottom:1px solid var(--line); cursor:default;
+    transition:padding-left .4s var(--ease);
+  }
+  .svc-row.has-photo{grid-template-columns:70px 1fr 1fr 190px;}
+  .svc-row:hover{padding-left:14px; background:rgba(193,67,43,0.06);}
+  .svc-num{font-family:'Oswald',sans-serif; font-size:26px; color:var(--ember); font-weight:600;}
+  .svc-row h3{font-size:19px; letter-spacing:0.01em;}
+  .svc-row p{color:var(--steel-light); font-size:14.5px; max-width:52ch;}
+  .svc-tags{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  .svc-tag{font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--steel-light); border:1px solid var(--line); padding:5px 11px; border-radius:20px;}
+  .svc-download{display:inline-flex; align-items:center; gap:8px; margin-top:16px; font-size:13px; font-weight:600; color:var(--white); background:var(--ember); padding:9px 16px; border-radius:2px; transition:background .3s var(--ease);}
+  .svc-download:hover{background:var(--ember-dark);}
+  .svc-download svg{width:15px; height:15px; flex-shrink:0;}
+  .svc-thumb{
+    width:100%; height:120px; border-radius:3px; overflow:hidden;
+    background:repeating-linear-gradient(45deg, #2a2d32 0px, #2a2d32 10px, #22252a 10px, #22252a 20px);
+    display:flex; align-items:center; justify-content:center; color:var(--steel-light); font-size:10px; letter-spacing:0.06em; text-transform:uppercase; text-align:center; padding:8px;
+  }
+  .svc-thumb img{width:100%; height:100%; object-fit:cover; display:block;}
+
+  /* ---------- photo gallery ---------- */
+  .gallery-grid{
+    display:grid; grid-template-columns:repeat(4, 1fr); grid-auto-rows:130px; gap:14px;
+  }
+  .gallery-item{position:relative; border-radius:3px; overflow:hidden; cursor:pointer;}
+  .gallery-item.tall{grid-row:span 2;}
+  .gallery-item img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .5s var(--ease);}
+  .gallery-item::after{content:'';position:absolute; inset:0; background:linear-gradient(180deg, transparent 55%, rgba(21,23,26,0.55) 100%); opacity:0; transition:opacity .35s var(--ease);}
+  .gallery-item:hover::after{opacity:1;}
+  .gallery-item:hover img{transform:scale(1.08);}
+  .gallery-item .zoom-ic{position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:50%; background:rgba(21,23,26,0.55); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:13px; opacity:0; transition:opacity .3s var(--ease);}
+  .gallery-item:hover .zoom-ic{opacity:1;}
+
+  /* ---------- testimonials ---------- */
+  .testi-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .testi-card{background:var(--white); border:1px solid var(--line-dark); border-radius:3px; padding:28px 26px; transition:transform .4s var(--ease), box-shadow .4s var(--ease);}
+  .testi-card:hover{transform:translateY(-5px); box-shadow:0 18px 34px rgba(21,23,26,0.08);}
+  .testi-card .quote{font-size:14.5px; color:var(--ink); margin-bottom:20px; line-height:1.65;}
+  .testi-card .who{display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line-dark); padding-top:14px;}
+  .testi-card .who strong{font-size:13.5px;}
+  .testi-card .who span{font-size:11px; color:var(--steel); text-transform:uppercase; letter-spacing:0.05em;}
+
+  /* ---------- process timeline ---------- */
+  .process{background:var(--paper-2);}
+  .timeline{position:relative; padding-left:36px;}
+  .timeline::before{content:''; position:absolute; left:7px; top:6px; bottom:6px; width:2px; background:var(--line-dark);}
+  .tl-step{position:relative; padding-bottom:44px;}
+  .tl-step:last-child{padding-bottom:0;}
+  .tl-step::before{content:''; position:absolute; left:-36px; top:2px; width:16px; height:16px; border-radius:50%; background:var(--paper-2); border:3px solid var(--ember);}
+  .tl-step h4{font-size:16px; margin-bottom:8px; letter-spacing:0.02em;}
+  .tl-step p{color:var(--steel); font-size:14px; max-width:56ch;}
+
+  /* ---------- contact ---------- */
+  .contact-grid{display:grid; grid-template-columns:0.9fr 1.1fr; gap:60px;}
+  .contact-info h2{font-size:clamp(26px,3vw,36px); margin-bottom:16px;}
+  .contact-info p{color:var(--steel); font-size:15px; margin-bottom:30px; max-width:42ch;}
+  .info-row{display:flex; gap:14px; align-items:flex-start; padding:16px 0; border-top:1px solid var(--line-dark);}
+  .info-row:last-child{border-bottom:1px solid var(--line-dark);}
+  .info-row .ic{width:34px; height:34px; border-radius:50%; background:var(--ember); color:var(--white); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0;}
+  .info-row .ic svg{width:17px; height:17px;}
+  .info-row strong{display:block; font-size:14px;}
+  .info-row span{font-size:13.5px; color:var(--steel);}
+  a.info-row{transition:background .3s var(--ease); border-radius:3px; padding-left:6px; padding-right:6px; margin:0 -6px;}
+  a.info-row:hover{background:rgba(37,211,102,0.07);}
+  a.info-row:hover .ic{background:#25D366;}
+  a.info-row:hover span{color:#1a9e4f;}
+  .form-card{background:var(--white); border:1px solid var(--line-dark); border-radius:3px; padding:38px;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;}
+  .field{display:flex; flex-direction:column; gap:6px;}
+  .field.full{grid-column:1/-1;}
+  .field label{font-size:11.5px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--steel);}
+  .field input, .field select, .field textarea{
+    border:1px solid var(--line-dark); padding:12px 14px; font-family:'Inter',sans-serif; font-size:14px;
+    border-radius:2px; background:var(--paper); transition:border-color .3s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--ember);}
+  .form-card .btn{width:100%; justify-content:center; margin-top:6px;}
+
+  /* ---------- FAQ ---------- */
+  .faq-item{border-bottom:1px solid var(--line-dark);}
+  .faq-q{display:flex; justify-content:space-between; align-items:center; padding:22px 0; cursor:pointer; font-family:'Oswald',sans-serif; font-size:16px; letter-spacing:0.01em; text-transform:none;}
+  .faq-q .plus{width:22px; height:22px; position:relative; flex-shrink:0;}
+  .faq-q .plus::before, .faq-q .plus::after{content:''; position:absolute; background:var(--ember); top:50%; left:50%; transform:translate(-50%,-50%);}
+  .faq-q .plus::before{width:14px; height:2px;}
+  .faq-q .plus::after{width:2px; height:14px; transition:transform .35s var(--ease);}
+  .faq-item.open .plus::after{transform:translate(-50%,-50%) rotate(90deg); opacity:0;}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .45s var(--ease);}
+  .faq-a p{padding-bottom:22px; color:var(--steel); font-size:14.5px; max-width:64ch;}
+
+  /* ---------- floating whatsapp ---------- */
+  .wa-float{
+    position:fixed; right:24px; bottom:24px; z-index:200;
+    width:58px; height:58px; border-radius:50%; background:#25D366;
+    display:flex; align-items:center; justify-content:center; color:var(--white);
+    box-shadow:0 6px 20px rgba(21,23,26,0.28); transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .wa-float svg{width:30px; height:30px;}
+  .wa-float:hover{transform:scale(1.08); box-shadow:0 8px 26px rgba(21,23,26,0.34);}
+  .wa-float::before{
+    content:''; position:absolute; inset:0; border-radius:50%; background:#25D366;
+    animation:waPulse 2.2s ease-out infinite; z-index:-1;
+  }
+  @keyframes waPulse{
+    0%{transform:scale(1); opacity:.55;}
+    100%{transform:scale(1.7); opacity:0;}
+  }
+  @media(max-width:600px){
+    .wa-float{width:52px; height:52px; right:16px; bottom:16px;}
+    .wa-float svg{width:26px; height:26px;}
+  }
+
+  /* ---------- footer ---------- */
+  footer{background:var(--ink); color:var(--steel-light); padding-top:72px;}
+  .foot-top{display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:40px; padding-bottom:52px; border-bottom:1px solid var(--line);}
+  .foot-brand p{font-size:13.5px; margin:16px 0 20px; max-width:32ch;}
+  .foot-social{display:flex; gap:12px;}
+  .foot-social a{width:34px; height:34px; border:1px solid var(--line); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; transition:all .3s;}
+  .foot-social a:hover{background:var(--ember); border-color:var(--ember); color:var(--white);}
+  .foot-col h5{font-size:12px; letter-spacing:0.1em; color:var(--white); margin-bottom:16px;}
+  .foot-col ul{list-style:none; display:flex; flex-direction:column; gap:10px;}
+  .foot-col a{font-size:13.5px;}
+  .foot-col a:hover{color:var(--white);}
+  .foot-bottom{display:flex; justify-content:space-between; padding:26px 0; font-size:12.5px;}
+
+  @media(max-width:900px){
+    .nav-links, .nav-sub{display:none;}
+    .burger{display:flex;}
+    .proj-grid, .testi-grid{grid-template-columns:1fr 1fr;}
+    .gallery-grid{grid-template-columns:repeat(3, 1fr); grid-auto-rows:110px;}
+    .svc-row{grid-template-columns:50px 1fr; row-gap:8px;}
+    .svc-row.has-photo{grid-template-columns:50px 1fr;}
+    .svc-row > div{grid-column:1/-1;}
+    .svc-thumb{grid-column:1/-1; height:180px;}
+    .contact-grid{grid-template-columns:1fr;}
+    .foot-top{grid-template-columns:1fr 1fr;}
+  }
+  @media(max-width:600px){
+    .util-bar .util-links{display:none;}
+    .proj-grid, .testi-grid, .form-row{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:repeat(2, 1fr); grid-auto-rows:120px;}
+    .foot-top{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="util-bar">
+  <div class="wrap">
+    <div class="util-links">
+      <a href="tel:5592563072"><i>&#9742;</i>55 9256 3072</a>
+      <a href="mailto:ventas@depfire.com"><i>&#9993;</i>ventas@depfire.com</a>
+      <a href="#"><i>&#128205;</i>Tlalnepantla, Edomex</a>
+    </div>
+    <div class="util-links">
+      <a href="#" aria-label="Facebook">Facebook</a>
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <a href="#" aria-label="TikTok">TikTok</a>
+    </div>
+  </div>
+</div>
+
+<header id="site-header">
+  <div class="wrap nav-main">
+    <a href="#" class="logo">
+      <span class="mark"><img src="assets/img/logo.png" alt="DEP FIRE"></span>
+      <small>Seguridad industrial y contra incendio</small>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#nosotros">Nosotros</a></li>
+      <li><a href="#proyectos">Proyectos</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#proceso">Proceso</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="btn btn-primary" style="display:none" id="nav-cta">Cotizar</a>
+    <button class="burger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+  </div>
+  <div class="nav-sub">
+    <div class="wrap">
+      <ul>
+        <li><a href="#servicios">Mantenimiento</a></li>
+        <li><a href="#servicios">Capacitación STPS</a></li>
+        <li><a href="#servicios">Señalética industrial</a></li>
+        <li><a href="#servicios">Equipo de protección</a></li>
+        <li><a href="#servicios">Rescate agreste</a></li>
+        <li><a href="#certificaciones">Certificaciones</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="assets/video/hero.mp4" type="video/mp4">
+  </video>
+  <div class="wrap hero-inner">
+    <p class="eyebrow">Más de 15 años protegiendo empresas</p>
+    <h1>Servicios de seguridad industrial en los que tu empresa puede confiar</h1>
+    <p>Sistemas contra incendio, mantenimiento, capacitación y consultoría en seguridad industrial certificada STPS, NOM 002 y NFPA 25 para proteger a tu personal, tus instalaciones y tu operación.</p>
+    <div class="hero-cta">
+      <a href="#contacto" class="btn btn-primary">Solicitar cotización</a>
+      <a href="#servicios" class="btn btn-ghost">Ver servicios</a>
+    </div>
+  </div>
+</section>
+
+<section class="partners">
+  <div class="wrap partners-row reveal">
+    <div class="partner-badge"><span class="code">NOM 002</span><span class="label">STPS 2010</span></div>
+    <div class="partner-badge"><span class="code">NFPA 25</span><span class="label">Rociadores y bombas</span></div>
+    <div class="partner-badge"><span class="code">NOM 154</span><span class="label">SCFI 2005</span></div>
+    <div class="partner-badge"><span class="code">DC-3</span><span class="label">Validez STPS</span></div>
+    <div class="partner-badge"><span class="code">Prot. Civil</span><span class="label">Capacitación certificada</span></div>
+  </div>
+</section>
+
+<section id="nosotros">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Quiénes somos</p>
+        <h2>Seguridad industrial integral con más de una década de experiencia</h2>
+      </div>
+      <p>En DEP FIRE ofrecemos servicios de seguridad industrial y sistemas contra incendio: desde extintores y rociadores hasta capacitación de brigadas, señalética y consultoría normativa, diseñados para cumplir los más altos estándares de calidad.</p>
+    </div>
+  </div>
+</section>
+
+<section id="proyectos">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Trabajos recientes</p>
+        <h2>Proyectos destacados</h2>
+      </div>
+      <a href="#" class="btn btn-dark">Ver todos los proyectos</a>
+    </div>
+    <div class="proj-grid stagger">
+      <div class="proj-card">
+        <div class="proj-thumb"><span class="proj-tag">Mantenimiento</span><img src="assets/img/servicio-02-extintores.jpg" alt="Extintores recargados DEP FIRE"></div>
+        <div class="proj-body"><h4>Recarga de extintores</h4><p>Lote de extintores recargados y listos para entrega, bajo NOM 154 SCFI 2005.</p></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-thumb"><span class="proj-tag">Instalación</span><img src="assets/img/proyecto-instalacion.jpg" alt="Instalación de sistema de detección DEP FIRE"></div>
+        <div class="proj-body"><h4>Sistema de detección — oficinas corporativas</h4><p>Instalación de sensores y cableado del sistema de detección de humo.</p></div>
+      </div>
+      <div class="proj-card">
+        <div class="proj-thumb"><span class="proj-tag">Capacitación</span><img src="assets/img/proyecto-capacitacion.jpg" alt="Capacitación de brigada de emergencia DEP FIRE"></div>
+        <div class="proj-body"><h4>Brigada de emergencia — corporativo</h4><p>Capacitación DC-3 a 40 colaboradores en sitio.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="servicios">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Catálogo de servicios</p>
+        <h2>Todo lo que tu empresa necesita para cumplir la norma</h2>
+      </div>
+      <p>Un servicio, un responsable, una norma cumplida. Así organizamos cada parte del catálogo.</p>
+    </div>
+    <div class="svc-list stagger">
+      <div class="svc-row has-photo">
+        <span class="svc-num">01</span>
+        <h3>Mantenimiento a bombas y rociadores</h3>
+        <div>
+          <p>Mantenimiento preventivo y correctivo a sistemas de rociadores y bombas contra incendio diésel, jockey y eléctrica, por personal especializado.</p>
+          <div class="svc-tags"><span class="svc-tag">NFPA 25</span><span class="svc-tag">Preventivo</span><span class="svc-tag">Correctivo</span></div>
+        </div>
+        <div class="svc-thumb">Foto pendiente</div>
+      </div>
+      <div class="svc-row has-photo">
+        <span class="svc-num">02</span>
+        <h3>Mantenimiento a extintores</h3>
+        <div>
+          <p>Mantenimiento y recarga de extintores de PQS, Agente Limpio, CO2 y HFC-236 con dictamen NOM 154 SCFI 2005.</p>
+          <div class="svc-tags"><span class="svc-tag">NOM 154</span><span class="svc-tag">Recarga</span></div>
+        </div>
+        <div class="svc-thumb"><img src="assets/img/proyecto-extintores.jpg" alt="Mantenimiento a extintores DEP FIRE"></div>
+      </div>
+      <div class="svc-row has-photo">
+        <span class="svc-num">03</span>
+        <h3>Capacitación STPS y Protección Civil</h3>
+        <div>
+          <p>Equipo multidisciplinario de agentes capacitadores con amplia experiencia en la industria. Emitimos DC-3 con validez ante la STPS.</p>
+          <div class="svc-tags"><span class="svc-tag">DC-3</span><span class="svc-tag">En sitio o externo</span></div>
+        </div>
+        <div class="svc-thumb"><img src="assets/img/servicio-03-capacitacion.jpg" alt="Capacitación de personal DEP FIRE"></div>
+      </div>
+      <div class="svc-row has-photo">
+        <span class="svc-num">04</span>
+        <h3>Equipo de protección personal</h3>
+        <div>
+          <p>Amplia variedad de opciones de seguridad para trabajos en altura, trabajos en caliente y espacios confinados.</p>
+          <div class="svc-tags"><span class="svc-tag">Altura</span><span class="svc-tag">Espacios confinados</span></div>
+          <a class="svc-download" href="assets/docs/catalogo-epp-brigadas.pdf" download>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar catálogo PDF
+          </a>
+        </div>
+        <div class="svc-thumb"><img src="assets/img/servicio-04-epp.jpg" alt="Equipo de protección personal DEP FIRE"></div>
+      </div>
+      <div class="svc-row has-photo">
+        <span class="svc-num">05</span>
+        <h3>Mantenimiento a alarmas y detección</h3>
+        <div>
+          <p>Servicio especializado de mantenimiento preventivo y correctivo a sistemas de detección de humo, alarmas de incendio y agentes especiales.</p>
+          <div class="svc-tags"><span class="svc-tag">Detección de humo</span><span class="svc-tag">Alarmas</span></div>
+        </div>
+        <div class="svc-thumb"><img src="assets/img/servicio-05-alarmas.jpg" alt="Mantenimiento a sistema de alarmas DEP FIRE"></div>
+      </div>
+      <div class="svc-row has-photo">
+        <span class="svc-num">06</span>
+        <h3>Señalética industrial</h3>
+        <div>
+          <p>Más de 1,000 diseños de señales y letreros fabricados conforme a la STPS y Protección Civil. Preguntamos por diseños especiales.</p>
+          <div class="svc-tags"><span class="svc-tag">Catálogo digital</span></div>
+        </div>
+        <div class="svc-thumb"><img src="assets/img/servicio-06-senaletica.jpg" alt="Señalética industrial DEP FIRE"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="galeria">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Nuestro trabajo</p>
+        <h2>Galería fotográfica</h2>
+      </div>
+      <p>Personal, equipo e instalaciones reales de DEP FIRE en campo.</p>
+    </div>
+    <div class="gallery-grid stagger">
+      <a class="gallery-item tall" href="assets/img/servicio-04-epp.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/servicio-04-epp.jpg" alt="Gabinete de equipo de protección personal">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+      <a class="gallery-item" href="assets/img/proyecto-capacitacion.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/proyecto-capacitacion.jpg" alt="Capacitación de brigada de emergencia">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+      <a class="gallery-item" href="assets/img/servicio-03-capacitacion.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/servicio-03-capacitacion.jpg" alt="Capacitación de personal DEP FIRE">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+      <a class="gallery-item tall" href="assets/img/servicio-05-alarmas.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/servicio-05-alarmas.jpg" alt="Mantenimiento a sistema de alarmas">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+      <a class="gallery-item" href="assets/img/proyecto-instalacion.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/proyecto-instalacion.jpg" alt="Instalación de sistema de detección">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+      <a class="gallery-item" href="assets/img/proyecto-extintores.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/proyecto-extintores.jpg" alt="Extintores recargados DEP FIRE">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+      <a class="gallery-item" href="assets/img/servicio-06-senaletica.jpg" target="_blank" rel="noopener">
+        <img src="assets/img/servicio-06-senaletica.jpg" alt="Señalética industrial DEP FIRE">
+        <span class="zoom-ic">&#8599;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Lo que dicen nuestros clientes</p>
+        <h2>Testimonios</h2>
+      </div>
+    </div>
+    <div class="testi-grid stagger">
+      <div class="testi-card">
+        <p class="quote">"El equipo explicó a detalle cada norma que aplicaba a nuestra planta y siempre estuvo disponible para resolver dudas."</p>
+        <div class="who"><strong>[ Nombre del cliente ]</strong><span>Google Review</span></div>
+      </div>
+      <div class="testi-card">
+        <p class="quote">"Muy profesionales y puntuales durante todo el proyecto de instalación."</p>
+        <div class="who"><strong>[ Nombre del cliente ]</strong><span>Google Review</span></div>
+      </div>
+      <div class="testi-card">
+        <p class="quote">"Excelente respuesta ante una emergencia con nuestro sistema de rociadores fuera de horario."</p>
+        <div class="who"><strong>[ Nombre del cliente ]</strong><span>Google Review</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="process" id="proceso">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Cómo trabajamos</p>
+        <h2>Nuestro proceso</h2>
+      </div>
+      <p>De la primera llamada al soporte continuo, así acompañamos cada proyecto.</p>
+    </div>
+    <div class="timeline reveal">
+      <div class="tl-step">
+        <h4>1. Diagnóstico inicial</h4>
+        <p>Visita a sitio, revisión de equipos existentes y de la normativa aplicable a tu operación.</p>
+      </div>
+      <div class="tl-step">
+        <h4>2. Propuesta técnica</h4>
+        <p>Cotización detallada por servicio, con tiempos y alcance definidos antes de iniciar.</p>
+      </div>
+      <div class="tl-step">
+        <h4>3. Instalación o mantenimiento</h4>
+        <p>Ejecución por personal certificado, con mínima interrupción a tu operación diaria.</p>
+      </div>
+      <div class="tl-step">
+        <h4>4. Entrega y documentación</h4>
+        <p>Dictámenes, bitácoras y constancias necesarias para tu cumplimiento normativo.</p>
+      </div>
+      <div class="tl-step">
+        <h4>5. Soporte continuo</h4>
+        <p>Recordatorios de mantenimiento periódico y atención ante emergencias.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto">
+  <div class="wrap contact-grid">
+    <div class="contact-info reveal">
+      <p class="eyebrow">Hablemos</p>
+      <h2>Solicita tu cotización</h2>
+      <p>Cuéntanos qué necesita tu empresa y te contactamos en menos de 24 horas.</p>
+      <div class="info-row">
+        <span class="ic">&#9742;</span>
+        <div><strong>Oficinas</strong><span>55 9256 3072 · 55 9256 3073</span></div>
+      </div>
+      <a class="info-row" href="https://wa.me/525538778617" target="_blank" rel="noopener">
+        <span class="ic"><svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.02 3C9.4 3 4 8.36 4 15c0 2.34.65 4.52 1.79 6.39L4 29l7.8-1.75A11.9 11.9 0 0 0 16.02 27C22.65 27 28 21.64 28 15S22.65 3 16.02 3zm6.98 16.9c-.3.83-1.72 1.6-2.38 1.68-.61.08-1.38.11-2.23-.14-.51-.15-1.17-.37-2.02-.72-3.56-1.54-5.88-5.12-6.06-5.36-.18-.24-1.45-1.93-1.45-3.68 0-1.75.92-2.6 1.25-2.96.32-.35.7-.44.94-.44.23 0 .47 0 .67.01.22.01.5-.08.79.6.3.7 1 2.44 1.08 2.62.09.18.14.39.02.63-.11.24-.17.39-.34.6-.17.2-.36.46-.51.62-.17.18-.35.37-.15.72.2.35.9 1.48 1.93 2.4 1.33 1.18 2.45 1.55 2.8 1.72.35.18.56.15.77-.09.2-.24.87-1.02 1.1-1.37.24-.35.47-.29.79-.17.32.12 2.05.97 2.4 1.14.35.18.58.26.67.41.09.15.09.86-.21 1.69z"/></svg></span>
+        <div><strong>WhatsApp ventas</strong><span>55 3877 8617 · Abrir chat</span></div>
+      </a>
+      <div class="info-row">
+        <span class="ic">&#128205;</span>
+        <div><strong>Dirección</strong><span>Cacama 17, MZ 016, El Tenayo Centro, Tlalnepantla, Edomex</span></div>
+      </div>
+      <div class="info-row">
+        <span class="ic">&#128337;</span>
+        <div><strong>Horario</strong><span>Lun–Vie 9:00–17:00 · Sáb 9:00–13:00</span></div>
+      </div>
+    </div>
+    <div class="form-card reveal">
+      <div class="form-row">
+        <div class="field"><label>Nombre completo</label><input type="text" placeholder="Tu nombre"></div>
+        <div class="field"><label>Empresa</label><input type="text" placeholder="Nombre de tu empresa"></div>
+      </div>
+      <div class="form-row">
+        <div class="field"><label>Correo</label><input type="email" placeholder="tu@empresa.com"></div>
+        <div class="field"><label>Teléfono</label><input type="tel" placeholder="55 0000 0000"></div>
+      </div>
+      <div class="form-row">
+        <div class="field full">
+          <label>Servicio de interés</label>
+          <select>
+            <option>Mantenimiento de extintores</option>
+            <option>Bombas y rociadores</option>
+            <option>Alarmas y detección</option>
+            <option>Capacitación STPS</option>
+            <option>Equipo de protección personal</option>
+            <option>Señalética industrial</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field full"><label>Mensaje</label><textarea rows="4" placeholder="Cuéntanos brevemente qué necesitas"></textarea></div>
+      </div>
+      <button class="btn btn-primary" type="button">Enviar solicitud</button>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <p class="eyebrow">Dudas frecuentes</p>
+        <h2>Preguntas frecuentes</h2>
+      </div>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q"><span>¿Cada cuánto se debe dar mantenimiento a los extintores?</span><span class="plus"></span></div>
+        <div class="faq-a"><p>La NOM 154 SCFI 2005 establece revisiones mensuales visuales y una recarga o mantenimiento anual, dependiendo del tipo de agente extintor.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>¿La capacitación tiene validez oficial?</span><span class="plus"></span></div>
+        <div class="faq-a"><p>Sí, emitimos constancia DC-3 con validez ante la STPS para todo el personal capacitado.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>¿Atienden emergencias fuera de horario?</span><span class="plus"></span></div>
+        <div class="faq-a"><p>Sí, contamos con atención para fallas urgentes en sistemas de bombas, rociadores y alarmas.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q"><span>¿En qué zonas dan servicio?</span><span class="plus"></span></div>
+        <div class="faq-a"><p>Atendemos principalmente el Estado de México y la Ciudad de México; consulta disponibilidad para otras zonas.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div class="foot-brand">
+        <a href="#" class="logo"><span class="mark"><img src="assets/img/logo.png" alt="DEP FIRE"></span></a>
+        <p>Sistemas contra incendio, mantenimiento y capacitación en seguridad industrial certificada para proteger tu empresa.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Instagram">in</a>
+          <a href="#" aria-label="TikTok">tk</a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h5>Navegación</h5>
+        <ul>
+          <li><a href="#nosotros">Nosotros</a></li>
+          <li><a href="#proyectos">Proyectos</a></li>
+          <li><a href="#proceso">Proceso</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Servicios</h5>
+        <ul>
+          <li><a href="#servicios">Mantenimiento</a></li>
+          <li><a href="#servicios">Capacitación STPS</a></li>
+          <li><a href="#servicios">Señalética</a></li>
+          <li><a href="#servicios">Rescate agreste</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h5>Contacto</h5>
+        <ul>
+          <li>55 9256 3072</li>
+          <li>ventas@depfire.com</li>
+          <li>Tlalnepantla, Edomex</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 DEP FIRE SA DE CV. Todos los derechos reservados.</span>
+      <span>Propuesta de diseño — no es el sitio final</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/525538778617" target="_blank" rel="noopener" aria-label="Chatear por WhatsApp">
+  <svg viewBox="0 0 32 32" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M16.02 3C9.4 3 4 8.36 4 15c0 2.34.65 4.52 1.79 6.39L4 29l7.8-1.75A11.9 11.9 0 0 0 16.02 27C22.65 27 28 21.64 28 15S22.65 3 16.02 3zm6.98 16.9c-.3.83-1.72 1.6-2.38 1.68-.61.08-1.38.11-2.23-.14-.51-.15-1.17-.37-2.02-.72-3.56-1.54-5.88-5.12-6.06-5.36-.18-.24-1.45-1.93-1.45-3.68 0-1.75.92-2.6 1.25-2.96.32-.35.7-.44.94-.44.23 0 .47 0 .67.01.22.01.5-.08.79.6.3.7 1 2.44 1.08 2.62.09.18.14.39.02.63-.11.24-.17.39-.34.6-.17.2-.36.46-.51.62-.17.18-.35.37-.15.72.2.35.9 1.48 1.93 2.4 1.33 1.18 2.45 1.55 2.8 1.72.35.18.56.15.77-.09.2-.24.87-1.02 1.1-1.37.24-.35.47-.29.79-.17.32.12 2.05.97 2.4 1.14.35.18.58.26.67.41.09.15.09.86-.21 1.69z"/></svg>
+</a>
+
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal, .stagger');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Sticky header shrink
+  const header = document.getElementById('site-header');
+  const navCta = document.getElementById('nav-cta');
+  window.addEventListener('scroll', () => {
+    if(window.scrollY > 60){ header.classList.add('scrolled'); navCta.style.display='inline-flex'; }
+    else { header.classList.remove('scrolled'); navCta.style.display='none'; }
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => { o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight = null; });
+      if(!isOpen){ item.classList.add('open'); a.style.maxHeight = a.scrollHeight + 'px'; }
+    });
+  });
+
+  // Mobile burger (basic toggle of main nav for smaller screens)
+  const burger = document.querySelector('.burger');
+  const navLinks = document.querySelector('.nav-links');
+  burger.addEventListener('click', () => {
+    const shown = navLinks.style.display === 'flex';
+    navLinks.style.cssText = shown ? '' : 'display:flex; position:absolute; top:100%; left:0; right:0; background:#ffffff; border-bottom:1px solid rgba(21,23,26,0.1); box-shadow:0 8px 24px rgba(21,23,26,0.1); flex-direction:column; padding:20px 32px; gap:18px;';
+  });
+</script>
+
+</body>
+</html>
