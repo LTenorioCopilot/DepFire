@@ -34,7 +34,7 @@ jobs:
     - name: 3. Copiar archivos web a la carpeta de Releases
       shell: powershell
       run: |
-        $DestinoRelease = "E:\Deploy\DeppFire\Releases\${{ env.VERSION }}"
+        $DestinoRelease = "E:\Deploy\DeppFire\Releases\${{ env.VERSION }}\Components\WebApp"
         
         Write-Host "Creando directorio: $DestinoRelease" -ForegroundColor Yellow
         New-Item -ItemType Directory -Path $DestinoRelease -Force | Out-Null
