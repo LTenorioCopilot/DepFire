@@ -20,16 +20,25 @@ jobs:
     - name: 1. Obtener el código fuente de la Web App
       uses: actions/checkout@v4
 
-    - name: 2. Determinar el número de versión
+    - name: 2. Generar versión automática incremental
       id: set_version
       shell: powershell
       run: |
-        $version = "${{ inputs.version_manual }}"
-        if (-not $version) {
-            $version = "v1.1.0"
+        $inputVersion = "${{ inputs.version_manual }}"
+        
+        if ($inputVersion) {
+            # Si se ejecutó manualmente ingresando una versión, se usa esa
+            $version = $inputVersion
+            if ($version -notmatch "^v") { $version = "v$version" }
+        } else {
+            # Si fue por PUSH automático, genera la versión usando el número de ejecución
+            # Ejemplo: v1.0.1, v1.0.2, v1.0.3...
+            $buildNum = "${{ github.run_number }}"
+            $version = "v1.0.$buildNum"
         }
+        
         echo "VERSION=$version" >> $env:GITHUB_ENV
-        Write-Host "Procesando versión: $version" -ForegroundColor Cyan
+        Write-Host ">>> Versión generada para este despliegue: $version <<<" -ForegroundColor Cyan
 
     - name: 3. Copiar archivos web a la carpeta de Releases
       shell: powershell
